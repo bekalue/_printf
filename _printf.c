@@ -1,45 +1,47 @@
 #include "main.h"
+
+
 /**
- *_printf - copy of the printf function.
- *@format: string that contains the format to print.
- *Return: 0 if success.
+ * _printf - prints a formated output to the stdout and returns the length of output
+ * @format: format string containing the characters and the specifiers
+ * Description: this function will call the get_print() function that will
+ * determine which printing function to call depending on the conversion
+ * specifiers contained into fmt
+ * Return: length of the formatted output string
  */
 int _printf(const char *format, ...)
 {
-	print my_print[] = {{"s", print_string}, {"c", print_char}, {"%", print_p}, {NULL, NULL}};
+	va_list arguments;
+	print_f func_arr[] = {
+		{'s', print_string},
+		{'c', print_char},
+		{'%', print_percent}
+	};
 
-	int count = 0, flags = 0, length = 0, s = 0;
-	va_list arg;
+	unsigned int count = 0, i, j;
 
-	va_start(arg, format);
-	if (format == NULL)
+	va_start(arguments, format);
+	if (!format || (format[0] == '%' && !format[1]))
 		return (-1);
-	while (format[count] != '\0')
+	if (format[0] == '%' && format[1] == ' ' && !format[2])
+		return (-1);
+	for (i = 0; format[i]; i++)
 	{
-		flags = 0;
-		if (format[count] == '%')
+		if (format[i] == '%')
 		{
-			s = 0;
-			if (format[count + 1] == '\0')
-				return (-1);
-			while (my_print[flags].str)
+			for (j = 0; func_arr[j]; j++)
 			{
-				if (format[count + 1] == my_print[flags].str[0])
+				if (func_arr[j].s == format[i + 1])
 				{
-					length += (my_print[flags].f(arg)) - 2;
-					count++;
-					s = 1;
+					count += func_arr[j].f(arguments);
+					i++;
 					break;
 				}
-				flags++;
 			}
-			if (s == 0)
-				_putchar(format[count]);
 		}
-		else
-			_putchar(format[count]);
-	count++;
+		count++;
+		_putchar(format[i]);
 	}
-	va_end(arg);
-	return (count + length);
+	va_end(arguments);
+	return (count);
 }
