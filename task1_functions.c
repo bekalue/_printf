@@ -38,7 +38,7 @@ int print_char(va_list args)
 	return (1);
 }
 /**
- * print_percentage - prints out a percetange
+ * print_percentage - prints out a percentage
  * @args: list of arguments
  *
  * Return: the number of char printed (1)
