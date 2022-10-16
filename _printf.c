@@ -10,6 +10,8 @@ int _printf(const char *format, ...)
 {
 	print_f print[] = {
 		{"s", print_string},
+		{"c", print_char},
+		{"%", print_percentage},
 		{NULL, NULL}};
 
 	va_list args;
