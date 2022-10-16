@@ -1,40 +1,50 @@
 #include "main.h"
 
 /**
- * print_string - prints a string to stdout
- * @str: pointer to the string to print
- * Return: number of chars written
+ * print_string - prints out a string
+ * @args: list of arguments
+ *
+ * Return: amount of chars printed
  */
-int print_string(va_list arguments)
+int print_string(va_list args)
 {
-	unsigned int i;
-	char *s;
+	char *str;
+	unsigned int i = 0;
 
-	s = va_arg(arguments, char *);
-	if (s == NULL)
+	str = va_arg(args, char *);
+	if (str == NULL)
 	{
-		i = _printf("(nill)");
-		return (i);
+		str = "(null)";
 	}
-	else
+	while (str[i] != '\0')
 	{
-		for (i = 0; s[i] != '\0'; i++)
-		{
-			if ((str[i] > 0 && str[i] < 32) || str[i] >= 127)
-			{
-				_putchar('\\');
-				_p('x');
-				if (str[i] < 16)
-					_stdout('0');
-				print_heXadecimaln(str[i]);
-				i += 4;
-			}
-		}
-		else
-		{
-			_printf(s[i]);
-		}
-			_putchar(s[i]);
+		_putchar(str[i]);
+		i++;
+	}
 	return (i);
 }
-int print_character(
+
+/**
+ * print_char - prints out a char
+ * @args: char to print
+ *
+ * Return: amount of chars printed (1)
+ */
+int print_char(va_list args)
+{
+	char c = va_arg(args, int);
+
+	_putchar(c);
+	return (1);
+}
+/**
+ * print_percentage - prints out a percetange
+ * @args: list of arguments
+ *
+ * Return: the number of char printed (1)
+ */
+int print_percentage(__attribute__((unused)) va_list args)
+{
+	_putchar('%');
+	return (1);
+}

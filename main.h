@@ -22,7 +22,7 @@ struct print
 typedef struct print print_f;
 
 /* Functions */
-int _stdout(char);
+int _putchar(char);
 int _printf(const char *format, ...);
 int print_aux(const char *format, print_f print[], va_list args);
 int print_string(va_list);

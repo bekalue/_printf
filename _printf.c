@@ -2,7 +2,7 @@
 
 
 /**
- * _printf - prints a formated output to the stdout and returns the length of output
+ * _printf - prints a formatted output to the stdout and returns the length of output
  * @format: format string containing the characters and the specifiers
  * Description: this function will call the get_print() function that will
  * determine which printing function to call depending on the conversion
@@ -11,37 +11,51 @@
  */
 int _printf(const char *format, ...)
 {
-	va_list arguments;
-	print_f func_arr[] = {
-		{'s', print_string},
-		{'c', print_char},
-		{'%', print_percent}
-	};
+	print_f print[] = {
+		{"s", print_string},
+		{NULL, NULL}};
 
+	va_list args;
 	unsigned int count = 0, i, j;
 
-	va_start(arguments, format);
-	if (!format || (format[0] == '%' && !format[1]))
+	if (format == NULL || (format[0] == '%' && format[1] == '\0'))
 		return (-1);
-	if (format[0] == '%' && format[1] == ' ' && !format[2])
-		return (-1);
+	va_start(args, format);
+
 	for (i = 0; format[i]; i++)
 	{
 		if (format[i] == '%')
 		{
-			for (j = 0; func_arr[j]; j++)
+			for (j = 0; print[j].s[0]; j++)
 			{
-				if (func_arr[j].s == format[i + 1])
+				if (print[j].s[0] == format[i + 1])
 				{
-					count += func_arr[j].f(arguments);
+					count += print[j].f(args);
 					i++;
 					break;
 				}
+				if (print[j + 1].s == NULL)
+				{
+					if (format[i + 1] > 32 && format[i + 1] < 127)
+					{
+						count++, _putchar(format[i]);
+						break;
+					}
+					else
+						return (-1);
+				}
 			}
+			if (format[i + 1] != '\0')
+			{
+				i++;
+				continue;
+			}
+			else
+				break;
 		}
-		count++;
 		_putchar(format[i]);
+		count++;
 	}
-	va_end(arguments);
+	va_end(args);
 	return (count);
 }
