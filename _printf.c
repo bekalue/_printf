@@ -9,19 +9,9 @@ int (*find_function(const char *format))(va_list)
 {
 
 	code_f find_f[] = {
-		{"c", print_c},
-		{"s", print_s},
-		{"i", print_i},
-		{"d", print_d},
-		{"b", print_bin},
-		 {"u", print_unsig},
-		 {"o", print_octal},
-		 {"x", print_x},
-		 {"X", print_X},
-		 {"r", print_rev},
-		 {"S", print_S},
-		 {"p", print_p},
-		{"R", print_rot13},
+		{"c", print_char},
+		{"s", print_string},
+		{"%", print_percentage},
 		{NULL, NULL}
 	};
 int i = 0;
