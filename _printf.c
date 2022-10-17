@@ -1,35 +1,37 @@
 #include "main.h"
 
 /**
- * determine_function - determines a function depending on the type
+ * find_func - determines a function depending on the type and prints
  * of specifier passed
- * @format: a specifier.
+ * @c: a specifier.
+ * @args: a list of arguments
  * Return: a right(choosen) function
  */
-int (*determine_function(const char *format))(va_list)
+int find_func(const char *c, va_list args)
 {
-	unsigned int i;
-	print_f func[] = {
+	int i = 0;
+	int len = 0;
+	print_f flags[] = {
 		{"c", print_char},
 		{"s", print_string},
-		{"i", print_num},
 		{"d", print_num},
-		{"u", print_unsigned_int},
+		{"i", print_num},
 		{"b", print_binary},
-		{"o", print_octal},
-		{"x", print_hexadecimal},
-		{"X", print_heXadecimal},
-		{"p", print_address},
-		{"S", print_String},
-		{"r", print_reversed},
-		{"R", print_rot13},
-		{NULL, NULL}};
-	for (i = 0; func[i].s != NULL; i++)
+		{"u", print_unsigned_int},
+		{"\n", NULL}};
+	while (flags[i].s)
 	{
-		if ((*func[i].s) == *format)
-			return (func[i].f);
+		if ((*flags[i].s) == (*c))
+			len = flags[i].f(args);
+
+		i++;
 	}
-	return (NULL);
+	if ((*c) == '%')
+	{
+		_putchar('%');
+		return (1);
+	}
+	return (len);
 }
 
 /**
@@ -37,39 +39,25 @@ int (*determine_function(const char *format))(va_list)
  * @format: a pointer to a string.
  * Return: number of characters printed.
  */
-
 int _printf(const char *format, ...)
 {
 	va_list args;
-	int (*f)(va_list);
-	unsigned int i = 0, count = 0;
+	unsigned int s, count;
 
-	if (format == NULL)
-		return (-1);
+	count = 0;
 	va_start(args, format);
-
-	i = 0;
-	while (format[i])
+	for (s = 0; format[s] != '\0'; s++)
 	{
-		for (; format[i] != '%' && format[i]; i++)
+		if (format[s] == '%')
 		{
-			_putchar(format[i]);
+			count += find_func(&format[s + 1], args);
+			s++;
+		}
+		else
+		{
+			_putchar(format[s]);
 			count++;
 		}
-		if (!format[i])
-			return (count);
-		if (!format[i + 1])
-			return (count);
-		f = determine_function(&format[i + 1]);
-		if (f != NULL)
-		{
-			count += f(args);
-			i += 2;
-			continue;
-		}
-		_putchar(format[i]);
-		count++;
-		i++;
 	}
 	va_end(args);
 	return (count);
