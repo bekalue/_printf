@@ -24,7 +24,7 @@ static int (*determine_function(const char *format))(va_list)
 		{"R", print_rot13},
 		{NULL, NULL}};
 
-	for (i = 0; (*func[i].s) &&(*func[i].s) != *format; i++)
+	for (i = 0; func[i].s != NULL &&(*func[i].s) != *format; i++)
 	{
 		;
 	}
