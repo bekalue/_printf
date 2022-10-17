@@ -7,14 +7,15 @@
  */
 int (*find_function(const char *format))(va_list)
 {
-
-	print_f find_f[] = {
+	print_f find_f[] ={
 		{"c", print_char},
 		{"s", print_string},
 		{"%", print_percentage},
 		{NULL, NULL}
 	};
-int i = 0;
+	int i;
+
+	i = 0;
 	while (find_f[i].s)
 	{
 		if (find_f[i].s[0] == (*format))
