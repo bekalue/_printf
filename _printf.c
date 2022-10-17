@@ -24,14 +24,12 @@ int (*determine_function(const char *format))(va_list)
 		{"r", print_reversed},
 		{"R", print_rot13},
 		{NULL, NULL}};
-	for (i = 0; func[i].s[0]; i++)
+	for (i = 0; func[i].s; i++)
 	{
-		if (func[i].s[0] == *format)
-		{
-			return(func[i].f);
-		}
+		if ((*func[i].s) == *format)
+			return (func[i].f);
 	}
-	return (0);
+	return (NULL);
 }
 
 /**
