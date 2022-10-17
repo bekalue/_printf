@@ -1,80 +1,89 @@
 #include "main.h"
 
 /**
- * check_for_specifiers - checks if there is a valid format specifier
- * @format: possible format specifier
- *
- * Return: pointer to valid function or NULL
+ * printIdentifiers - prints special characters
+ * @next: character after the %
+ * @arg: argument for the indentifier
+ * Return: the number of characters printed
+ * (excluding the null byte used to end output to strings)
  */
-static int (*check_for_specifiers(const char *format))(va_list)
+
+int printIdentifiers(char next, va_list arg)
 {
-	unsigned int i;
-	print_f find[] = {
+	int functsIndex;
+
+	print_f functs[] = {
 		{"c", print_char},
 		{"s", print_string},
-		{"i", print_integer},
 		{"d", print_decimal},
+		{"i", print_integer},
 		{"u", print_unsigned_int},
 		{"b", print_binary},
 		{"o", print_octal},
 		{"x", print_hexadecimal},
 		{"X", print_heXadecimal},
-		{"p", print_address},
 		{"S", print_String},
-		{"r", print_reversed},
-		{"R", print_rot13},
 		{NULL, NULL}};
 
-	for (i = 0; find[i].s; i++)
+	for (functsIndex = 0; functs[functsIndex].s != NULL; functsIndex++)
 	{
-		if (find[i].s == *format)
-		{
-			break;
-		}
+		if (functs[functsIndex].s[0] == next)
+			return (functs[functsIndex].f(arg));
 	}
-	return (find[i].f);
+	return (0);
 }
 
 /**
- * _printf - prints anything
- * @format: list of argument types passed to the function
+ * _printf - mimic printf from stdio
+ * Description: produces output according to a format
+ * write output to stdout, the standard output stream
+ * @format: character string composed of zero or more directives
  *
- * Return: number of characters printed
+ * Return: the number of characters printed
+ * (excluding the null byte used to end output to strings)
+ * return -1 for incomplete identifier error
  */
+
 int _printf(const char *format, ...)
 {
-	unsigned int i = 0, count = 0;
-	va_list valist;
-	int (*f)(va_list);
+	unsigned int i;
+	int identifierPrinted = 0, charPrinted = 0;
+	va_list arg;
 
+	va_start(arg, format);
 	if (format == NULL)
 		return (-1);
-	va_start(valist, format);
-	while (format[i])
+
+	for (i = 0; format[i] != '\0'; i++)
 	{
-		for (; format[i] != '%' && format[i]; i++)
+		if (format[i] != '%')
 		{
 			_putchar(format[i]);
-			count++;
-		}
-		if (!format[i])
-			return (count);
-		f = check_for_specifiers(&format[i + 1]);
-		if (f != NULL)
-		{
-			count += f(valist);
-			i += 2;
+			charPrinted++;
 			continue;
 		}
-		if (!format[i + 1])
-			return (-1);
-		_putchar(format[i]);
-		count++;
 		if (format[i + 1] == '%')
-			i += 2;
-		else
+		{
+			_putchar('%');
+			charPrinted++;
 			i++;
+			continue;
+		}
+		if (format[i + 1] == '\0')
+			return (-1);
+
+		identifierPrinted = printIdentifiers(format[i + 1], arg);
+		if (identifierPrinted == -1 || identifierPrinted != 0)
+			i++;
+		if (identifierPrinted > 0)
+			charPrinted += identifierPrinted;
+
+		if (identifierPrinted == 0)
+		{
+			_putchar('%');
+			charPrinted++;
+		}
 	}
-	va_end(valist);
-	return (count);
+	va_end(arg);
+	return (charPrinted);
 }
