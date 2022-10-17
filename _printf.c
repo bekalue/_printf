@@ -1,59 +1,68 @@
 #include "main.h"
 
 /**
- * find_function - determines the type of format passed
- * @format: function
- * Return: Null
+ * check_for_specifiers - checks if there is a valid format specifier
+ * @format: possible format specifier
+ *
+ * Return: pointer to valid function or NULL
  */
-int (*find_function(const char *format))(va_list)
+static int (*check_for_specifiers(const char *format))(va_list)
 {
-	print_f find[] ={
+	unsigned int i;
+	print_f find[] = {
 		{"c", print_char},
 		{"s", print_string},
-		{"%", print_percentage},
-		{"d", print_decimal},
 		{"i", print_integer},
-		{NULL, NULL}
-	};
-	unsigned int i;
+		{"d", print_decimal},
+		{"u", print_unsigned_int},
+		{"b", print_binary},
+		{"o", print_octal},
+		{"x", print_hexadecimal},
+		{"X", print_heXadecimal},
+		{"p", print_address},
+		{"S", print_String},
+		{"r", print_reversed},
+		{"R", print_rot13},
+		{NULL, NULL}};
 
-	for(i = 0; find[i].s; i++)
+	for (i = 0; find[i].s != NULL; i++)
 	{
-		if (find[i].s[0] == (*format))
-			return (find[i].f);
+		if (*(find[i].s) == *format)
+		{
+			break;
+		}
 	}
-	return (NULL);
+	return (find[i].f);
 }
 
 /**
- * _printf - prints formated statement
- * @format: format to be printed
- * Return: size
+ * _printf - prints anything
+ * @format: list of argument types passed to the function
+ *
+ * Return: number of characters printed
  */
-
 int _printf(const char *format, ...)
 {
-	va_list ap;
-	int (*f)(va_list);
 	unsigned int i = 0, count = 0;
+	va_list valist;
+	int (*f)(va_list);
 
 	if (format == NULL)
 		return (-1);
-	va_start(ap, format);
+	va_start(valist, format);
 	while (format[i])
 	{
-		while (format[i] != '%' && format[i])
+		for (; format[i] != '%' && format[i]; i++)
 		{
 			_putchar(format[i]);
 			count++;
-			i++;
 		}
-		if (format[i] == '\0')
+		if (!format[i])
 			return (count);
-		f = find_function(&format[i + 1]);
+		f = check_for_specifiers(&format[i + 1]);
 		if (f != NULL)
 		{
-			count += f(ap);
+			count += f(valist);
 			i += 2;
 			continue;
 		}
@@ -66,6 +75,6 @@ int _printf(const char *format, ...)
 		else
 			i++;
 	}
-	va_end(ap);
+	va_end(valist);
 	return (count);
 }

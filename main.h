@@ -29,5 +29,14 @@ int print_percentage(va_list);
 int print_char(va_list);
 int print_decimal(va_list);
 int print_integer(va_list);
+int print_String(va_list);
+int print_address(va_list);
+int print_unsigned_int(va_list);
+int print_binary(va_list);
+int print_octal(va_list);
+int print_hexadecimal(va_list);
+int print_heXadecimal(va_list);
+int print_reversed(va_list);
+int print_rot13(va_list);
 
 #endif
