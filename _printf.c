@@ -25,9 +25,9 @@ static int (*check_for_specifiers(const char *format))(va_list)
 		{"R", print_rot13},
 		{NULL, NULL}};
 
-	for (i = 0; find[i].s != NULL; i++)
+	for (i = 0; find[i].s; i++)
 	{
-		if (*(find[i].s) == *format)
+		if (find[i].s == *format)
 		{
 			break;
 		}
