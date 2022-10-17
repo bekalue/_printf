@@ -56,10 +56,10 @@ int _printf(const char *format, ...)
 			_putchar(format[i]);
 			count++;
 		}
-		if (format[i] == '\0')
+		if (!format[i])
 			return (count);
 		if (!format[i + 1])
-			return (count);
+			return (-1);
 		f = determine_function(&format[i + 1]);
 		if (f != NULL)
 		{
