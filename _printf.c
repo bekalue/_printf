@@ -3,78 +3,75 @@
 /**
  * determine_function - determines a function depending on the type of specifier passed
  * @format: a specifier.
- * Return: a right function or NULL
+ * Return: a right(choosen) function
  */
-int (*determine_function(const char *format))(va_list)
+static int (*determine_function(const char *format))(va_list)
 {
-	print_f find_f[] = {
+	unsigned int i;
+	print_f func[] = {
 		{"c", print_char},
 		{"s", print_string},
-		{"%", print_percentage},
 		{"i", print_integer},
 		{"d", print_decimal},
-		{"b", print_binary},
 		{"u", print_unsigned_int},
+		{"b", print_binary},
 		{"o", print_octal},
 		{"x", print_hexadecimal},
 		{"X", print_heXadecimal},
-		{"S", print_String},
-		{"R", print_rot13},
 		{"p", print_address},
+		{"S", print_String},
+		{"r", print_reversed},
+		{"R", print_rot13},
 		{NULL, NULL}};
-	int i;
 
-	i = 0;
-	while (find_f[i].s)
+	for (i = 0; func[i].s &&(*func[i].s) != *format; i++)
 	{
-		if (find_f[i].s[0] == (*format))
-			return (find_f[i].f);
-		i++;
+		;
 	}
-	return (NULL);
+	return (func[i].f);
 }
 
 /**
- * _printf - prints formated statement
- * @format: format to be printed
- * Return: size
+ * _printf - prints formatted string just like printf
+ * @format: a pointer to a string.
+ * Return: number of characters printed.
  */
 
 int _printf(const char *format, ...)
 {
-	va_list ap;
+	va_list args;
 	int (*f)(va_list);
-	unsigned int i = 0, cprint = 0;
+	unsigned int i = 0, count = 0;
 
 	if (format == NULL)
 		return (-1);
-	va_start(ap, format);
-	while (format[i])
+	va_start(args, format);
+
+	for (i = 0; format[i]; i++)
 	{
-		while (format[i] != '%' && format[i])
+		for (;format[i] != '%' && format[i]; i++)
 		{
 			_putchar(format[i]);
-			cprint++;
-			i++;
+			count++;
 		}
-		if (format[i] == '\0')
-			return (cprint);
-		f = find_function(&format[i + 1]);
+		if (!format[i])
+			return (count);
+		f = determine_function(&format[i + 1]);
 		if (f != NULL)
 		{
-			cprint += f(ap);
+			count += f(args);
 			i += 2;
 			continue;
 		}
 		if (!format[i + 1])
 			return (-1);
 		_putchar(format[i]);
-		cprint++;
+		count++;
 		if (format[i + 1] == '%')
 			i += 2;
 		else
 			i++;
 	}
-	va_end(ap);
-	return (cprint);
+	va_end(args);
+	return(count);
 }
