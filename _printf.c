@@ -1,21 +1,27 @@
 #include "main.h"
 
 /**
- * find_function - determines the type of format passed
- * @format: function
- * Return: Null
+ * determine_function - determines a function depending on the type of specifier passed
+ * @format: a specifier.
+ * Return: a right function or NULL
  */
-int (*find_function(const char *format))(va_list)
+int (*determine_function(const char *format))(va_list)
 {
-	print_f find_f[] ={
+	print_f find_f[] = {
 		{"c", print_char},
 		{"s", print_string},
 		{"%", print_percentage},
 		{"i", print_integer},
 		{"d", print_decimal},
 		{"b", print_binary},
-		{NULL, NULL}
-	};
+		{"u", print_unsigned_int},
+		{"o", print_octal},
+		{"x", print_hexadecimal},
+		{"X", print_heXadecimal},
+		{"S", print_String},
+		{"R", print_rot13},
+		{"p", print_address},
+		{NULL, NULL}};
 	int i;
 
 	i = 0;
