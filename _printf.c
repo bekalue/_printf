@@ -56,7 +56,7 @@ int _printf(const char *format, ...)
 			_putchar(format[i]);
 			count++;
 		}
-		if (!format[i])
+		if (format[i] == '\0')
 			return (count);
 		if (!format[i + 1])
 			return (count);
