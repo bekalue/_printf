@@ -1,60 +1,69 @@
 #include "main.h"
 
-
 /**
- * _printf - prints a formatted output to the stdout and returns the length of output
- * @format: format string containing the characters and the specifiers
- * Return: length of the formatted output string
+ * find_function - determines the type of format passed
+ * @format: function
+ * Return: Null
  */
-int _printf(const char *format, ...)
+int (*find_function(const char *format))(va_list)
 {
-	print_f print[] = {
-		{"s", print_string},
+
+	print_f find_f[] = {
 		{"c", print_char},
+		{"s", print_string},
 		{"%", print_percentage},
 		{NULL, NULL}};
-
-	va_list args;
-	unsigned int count = 0, i, j;
-
-	if (format == NULL || (format[0] == '%' && format[1] == '\0'))
-		return (-1);
-	va_start(args, format);
-
-	for (i = 0; format[i]; i++)
+	int i = 0;
+	while (find_f[i].s)
 	{
-		if (format[i] == '%')
-		{
-			for (j = 0; print[j].s[0]; j++)
-			{
-				if (print[j].s[0] == format[i + 1])
-				{
-					count += print[j].f(args);
-					i++;
-					break;
-				}
-				if (print[j + 1].s == NULL)
-				{
-					if (format[i + 1] > 32 && format[i + 1] < 127)
-					{
-						count++, _putchar(format[i]);
-						break;
-					}
-					else
-						return (-1);
-				}
-			}
-			if (format[i + 1] != '\0')
-			{
-				i++;
-				continue;
-			}
-			else
-				break;
-		}
-		_putchar(format[i]);
-		count++;
+		if (find_f[i].s[0] == (*format))
+			return (find_f[i].f);
+		i++;
 	}
-	va_end(args);
-	return (count);
+	return (NULL);
+}
+
+/**
+ * _printf - prints formated statement
+ * @format: format to be printed
+ * Return: size
+ */
+
+int _printf(const char *format, ...)
+{
+	va_list ap;
+	int (*f)(va_list);
+	unsigned int i = 0, cprint = 0;
+
+	if (format == NULL)
+		return (-1);
+	va_start(ap, format);
+	while (format[i])
+	{
+		while (format[i] != '%' && format[i])
+		{
+			_putchar(format[i]);
+			cprint++;
+			i++;
+		}
+		if (format[i] == '\0')
+			return (cprint);
+		f = find_function(&format[i + 1]);
+		if (f != NULL)
+		{
+			cprint += f(ap);
+			i += 2;
+			continue;
+		}
+		if (!format[i + 1])
+			return (-1);
+		_putchar(format[i]);
+		cprint++;
+		if (format[i + 1] == '%')
+			i += 2;
+		else
+			i++;
+	}
+	va_end(ap);
+	return (cprint);
 }
