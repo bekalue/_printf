@@ -6,7 +6,7 @@
  * @format: a specifier.
  * Return: a right(choosen) function
  */
-static int (*determine_function(const char *format))(va_list)
+int (*determine_function(const char *format))(va_list)
 {
 	unsigned int i;
 	print_f func[] = {
@@ -24,12 +24,14 @@ static int (*determine_function(const char *format))(va_list)
 		{"r", print_reversed},
 		{"R", print_rot13},
 		{NULL, NULL}};
-
-	for (i = 0; func[i].s != NULL && (*func[i].s) != *format; i++)
+	for (i = 0; func[i].s[0]; i++)
 	{
-		;
+		if (func[i].s[0] == *format)
+		{
+			return(func[i].f);
+		}
 	}
-	return (func[i].f);
+	return (0);
 }
 
 /**
