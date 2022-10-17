@@ -59,7 +59,7 @@ int _printf(const char *format, ...)
 		if (!format[i])
 			return (count);
 		if (!format[i + 1])
-			return (-1);
+			return (count);
 		f = determine_function(&format[i + 1]);
 		if (f != NULL)
 		{
@@ -69,6 +69,7 @@ int _printf(const char *format, ...)
 		}
 		_putchar(format[i]);
 		count++;
+		i++;
 	}
 	va_end(args);
 	return (count);
