@@ -1,89 +1,80 @@
 #include "main.h"
 
 /**
- * printIdentifiers - prints special characters
- * @next: character after the %
- * @arg: argument for the indentifier
- * Return: the number of characters printed
- * (excluding the null byte used to end output to strings)
+ * find_function - determines the type of format passed
+ * @format: function
+ * Return: Null
  */
-
-int printIdentifiers(char next, va_list arg)
+int (*find_function(const char *format))(va_list)
 {
-	int functsIndex;
 
-	print_f functs[] = {
+	print_f find_f[] = {
 		{"c", print_char},
+		{"%", print_percentage},
 		{"s", print_string},
-		{"d", print_decimal},
 		{"i", print_integer},
-		{"u", print_unsigned_int},
+		{"d", print_decimal},
 		{"b", print_binary},
+		{"u", print_unsigned_int},
 		{"o", print_octal},
 		{"x", print_hexadecimal},
 		{"X", print_heXadecimal},
+		{"r", print_reversed},
 		{"S", print_String},
+		{"p", print_address},
+		{"R", print_rot13},
 		{NULL, NULL}};
-
-	for (functsIndex = 0; functs[functsIndex].s != NULL; functsIndex++)
+	int i = 0;
+	while (find_f[i].s)
 	{
-		if (functs[functsIndex].s[0] == next)
-			return (functs[functsIndex].f(arg));
+		if (find_f[i].s[0] == (*format))
+			return (find_f[i].f);
+		i++;
 	}
-	return (0);
+	return (NULL);
 }
 
 /**
- * _printf - mimic printf from stdio
- * Description: produces output according to a format
- * write output to stdout, the standard output stream
- * @format: character string composed of zero or more directives
- *
- * Return: the number of characters printed
- * (excluding the null byte used to end output to strings)
- * return -1 for incomplete identifier error
+ * _printf - prints formated statement
+ * @format: format to be printed
+ * Return: size
  */
 
 int _printf(const char *format, ...)
 {
-	unsigned int i;
-	int identifierPrinted = 0, charPrinted = 0;
-	va_list arg;
+	va_list ap;
+	int (*f)(va_list);
+	unsigned int i = 0, count = 0;
 
-	va_start(arg, format);
 	if (format == NULL)
 		return (-1);
-
-	for (i = 0; format[i] != '\0'; i++)
+	va_start(ap, format);
+	while (format[i])
 	{
-		if (format[i] != '%')
+		while (format[i] != '%' && format[i])
 		{
 			_putchar(format[i]);
-			charPrinted++;
-			continue;
-		}
-		if (format[i + 1] == '%')
-		{
-			_putchar('%');
-			charPrinted++;
+			count++;
 			i++;
+		}
+		if (format[i] == '\0')
+			return (count);
+		f = find_function(&format[i + 1]);
+		if (f != NULL)
+		{
+			count += f(ap);
+			i += 2;
 			continue;
 		}
-		if (format[i + 1] == '\0')
+		if (!format[i + 1])
 			return (-1);
-
-		identifierPrinted = printIdentifiers(format[i + 1], arg);
-		if (identifierPrinted == -1 || identifierPrinted != 0)
+		_putchar(format[i]);
+		count++;
+		if (format[i + 1] == '%')
+			i += 2;
+		else
 			i++;
-		if (identifierPrinted > 0)
-			charPrinted += identifierPrinted;
-
-		if (identifierPrinted == 0)
-		{
-			_putchar('%');
-			charPrinted++;
-		}
 	}
-	va_end(arg);
-	return (charPrinted);
+	va_end(ap);
+	return (count);
 }
