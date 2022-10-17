@@ -1,50 +1,79 @@
 #include "main.h"
 
 /**
- * print_string - prints out a string
- * @args: list of arguments
+ * print_integer - prints an integer
+ * @i: integer to print
  *
- * Return: amount of chars printed
+ * Return: number of chars and digits printed
  */
-int print_string(va_list args)
+int print_integer(va_list i)
 {
-	char *str;
-	unsigned int i = 0;
+    int a[10];
+    int j, m, n, sum, count;
 
-	str = va_arg(args, char *);
-	if (str == NULL)
-	{
-		str = "(null)";
-	}
-	while (str[i] != '\0')
-	{
-		_putchar(str[i]);
-		i++;
-	}
-	return (i);
+    n = va_arg(i, int);
+    count = 0;
+    m = 1000000000;
+    a[0] = n / m;
+    for (j = 1; j < 10; j++)
+    {
+        m /= 10;
+        a[j] = (n / m) % 10;
+    }
+    if (n < 0)
+    {
+        _putchar('-');
+        count++;
+        for (j = 0; j < 10; j++)
+            a[j] *= -1;
+    }
+    for (j = 0, sum = 0; j < 10; j++)
+    {
+        sum += a[j];
+        if (sum != 0 || j == 9)
+        {
+            _putchar('0' + a[j]);
+            count++;
+        }
+    }
+    return (count);
 }
 
 /**
- * print_char - prints out a char
- * @args: char to print
+ * print_decimal - prints a decimal
+ * @d: decimal to print
  *
- * Return: amount of chars printed (1)
+ * Return: number of chars and digits printed
  */
-int print_char(va_list args)
+int print_decimal(va_list d)
 {
-	char c = va_arg(args, int);
+    int a[10];
+    int j, m, n, sum, count;
 
-	_putchar(c);
-	return (1);
-}
-/**
- * print_percentage - prints out a percentage
- * @args: list of arguments
- *
- * Return: the number of char printed (1)
- */
-int print_percentage(__attribute__((unused)) va_list args)
-{
-	_putchar('%');
-	return (1);
+    n = va_arg(d, int);
+    count = 0;
+    m = 1000000000;
+    a[0] = n / m;
+    for (j = 1; j < 10; j++)
+    {
+        m /= 10;
+        a[j] = (n / m) % 10;
+    }
+    if (n < 0)
+    {
+        _putchar('-');
+        count++;
+        for (j = 0; j < 10; j++)
+            a[j] *= -1;
+    }
+    for (j = 0, sum = 0; j < 10; j++)
+    {
+        sum += a[j];
+        if (sum != 0 || j == 9)
+        {
+            _putchar('0' + a[j]);
+            count++;
+        }
+    }
+    return (count);
 }
