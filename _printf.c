@@ -1,7 +1,8 @@
 #include "main.h"
 
 /**
- * determine_function - determines a function depending on the type of specifier passed
+ * determine_function - determines a function depending on the type
+ * of specifier passed
  * @format: a specifier.
  * Return: a right(choosen) function
  */
@@ -24,7 +25,7 @@ static int (*determine_function(const char *format))(va_list)
 		{"R", print_rot13},
 		{NULL, NULL}};
 
-	for (i = 0; func[i].s != NULL &&(*func[i].s) != *format; i++)
+	for (i = 0; func[i].s != NULL && (*func[i].s) != *format; i++)
 	{
 		;
 	}
@@ -49,7 +50,7 @@ int _printf(const char *format, ...)
 
 	for (i = 0; format[i]; i++)
 	{
-		for (;format[i] != '%' && format[i]; i++)
+		for (; format[i] != '%' && format[i]; i++)
 		{
 			_putchar(format[i]);
 			count++;
@@ -73,5 +74,5 @@ int _printf(const char *format, ...)
 			i++;
 	}
 	va_end(args);
-	return(count);
+	return (count);
 }
