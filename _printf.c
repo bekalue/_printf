@@ -8,16 +8,16 @@
 int (*find_function(const char *format))(va_list)
 {
 
-	code_f find_f[] = {
+	print_f find_f[] = {
 		{"c", print_char},
 		{"s", print_string},
 		{"%", print_percentage},
 		{NULL, NULL}
 	};
 int i = 0;
-	while (find_f[i].sc)
+	while (find_f[i].s)
 	{
-		if (find_f[i].sc[0] == (*format))
+		if (find_f[i].s[0] == (*format))
 			return (find_f[i].f);
 		i++;
 	}
