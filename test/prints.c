@@ -3,6 +3,6 @@
 int main()
 {
 	char str = 'b';
-	_printf("%c\n", str);
+	printf("%%", str);
 	return (0);
 }

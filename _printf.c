@@ -12,8 +12,8 @@ int (*determine_function(const char *format))(va_list)
 	print_f func[] = {
 		{"c", print_char},
 		{"s", print_string},
-		{"i", print_integer},
-		{"d", print_decimal},
+		{"i", print_num},
+		{"d", print_num},
 		{"u", print_unsigned_int},
 		{"b", print_binary},
 		{"o", print_octal},
@@ -24,7 +24,7 @@ int (*determine_function(const char *format))(va_list)
 		{"r", print_reversed},
 		{"R", print_rot13},
 		{NULL, NULL}};
-	for (i = 0; func[i].s; i++)
+	for (i = 0; func[i].s != NULL; i++)
 	{
 		if ((*func[i].s) == *format)
 			return (func[i].f);
@@ -66,13 +66,9 @@ int _printf(const char *format, ...)
 			continue;
 		}
 		if (!format[i + 1])
-			return (-1);
+			return (count);
 		_putchar(format[i]);
 		count++;
-		if (format[i + 1] == '%')
-			i += 2;
-		else
-			i++;
 	}
 	va_end(args);
 	return (count);
