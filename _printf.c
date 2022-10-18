@@ -46,13 +46,13 @@ int (*get_op_func(char s))(va_list)
  */
 int verify(char c)
 {
-	char *cadena = "csdiRurboxXp";
+	char *str = "csdiRurboxXp";
 	int t = 11;
 	int i = 0;
 
 	while (i <= t)
 	{
-		if (cadena[i] == c)
+		if (str[i] == c)
 		{
 			return (1);
 		}
