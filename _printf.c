@@ -1,105 +1,73 @@
 #include "main.h"
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 /**
- * get__op_func - determines function based up on the specifier passed.
- * @specifier: a specifier passed.
+ * get_identifier - gets the correct identifier to print
+ * @formatt: type of format
  *
- * Return: the choosen function or null.
+ * Return: pointer to function
  */
-
-int (*get_op_func(char s))(va_list)
+int (*get_identifier(char formatt))(va_list)
 {
-	int iterarr = 0;
-	type_t_f search[] = {
-		{'c', print_char},
-		{'s', print_string},
-		{'d', print_number},
-		{'i', print_number},
-		{'u', print_number_ui},
-		{'R', print_rot},
-		{'r', print_rev},
-		{'b', print_binary},
-		{'o', print_octal},
-		{'x', print_hexa},
-		{'X', print_HEXA},
-		{'p', print_pointer},
+	print_f letter[] = {
+		{'c', c_printf},
+		{'s', s_printf},
+		{'i', number_printf},
+		{'d', number_printf},
+		{'r', reverse_printf},
+		{'u', unsigned_printf},
+		{'R', rot13_printf},
 		{'\0', NULL},
 	};
+	int i = 0;
 
-	while (iterarr != 13)
+	for (i = 0; letter[i].string; i++)
 	{
-		if (search[iterarr].tipo == s)
-		{
-			return (search[iterarr].f);
-		}
-		else
-		{
-			iterarr++;
-		}
+		if (formatt == letter[i].string)
+			return (letter[i].func);
 	}
 	return (NULL);
 }
-/**
- * verify - validates the specifier.
- * @specifier: a specifier.
- * Return: not verified (0) or verified (1).
- */
-int verify(char c)
-{
-	char *str = "csdiRurboxXp";
-	int t = 11;
-	int i = 0;
 
-	while (i <= t)
-	{
-		if (str[i] == c)
-		{
-			return (1);
-		}
-		i++;
-	}
-	return (0);
-}
 /**
- * _printf - print whatever is given
- * @format: arguments
- * Return: number of characters printed
+ * _printf - produces output according to a format.
+ * @format: list of arguments tpes passed to the function.
+ * Return: Same as printf standard functions
  */
 int _printf(const char *format, ...)
 {
-	int num_characters = 0, iter = 0;
-	va_list parameter;
+	int i = 0, counter = 0;
 
-	va_start(parameter, format);
+	va_list arg;
+	int (*func)(va_list);
 
-	if (format != NULL)
-	{
-		for (iter = 0; format[iter]; iter++)
-		{
-			if (format[iter] == '%' && format[iter + 1] != '%' && format[iter + 1] != '\0')
-			{
-				if (verify(format[iter + 1]) == 1)
-				{
-					num_characters += (*get_op_func(format[iter + 1]))(parameter);
-					iter++;
-					/*continue;*/
-				}
-				else
-					_putchar(format[iter]), num_characters++;
-			}
-			else if (format[iter] == '%' && format[iter + 1] == '%')
-				_putchar('%'), iter++, num_characters++;
-			else if (format[iter + 1] == '\0' && format[iter] == '%')
-			{
-				return (-1);
-			}
-			else
-				_putchar(format[iter]), num_characters++;
-		}
-	}
-	else
+	if (format == NULL)
 		return (-1);
-
-	return (num_characters);
-	va_end(parameter);
+	va_start(arg, format);
+	while (format[i] != '\0')
+	{
+		for (; format[i] != '%' && format[i] != '\0'; i++)
+		{
+			_putchar(format[i]), counter++;
+		}
+		if (format[i] == '\0')
+			return (counter);
+		func = *get_identifier(format[i + 1]);
+		if (func != NULL)
+		{
+			counter += func(arg), i += 2;
+			continue;
+		}
+		if (format[i + 1] == '\0')
+			return (-1);
+		_putchar(format[i]), counter++;
+		if (format[i + 1] == '%')
+			i += 2;
+		else
+			i++;
+	}
+	va_end(arg);
+	return (counter);
 }

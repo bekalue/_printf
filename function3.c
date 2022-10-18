@@ -1,84 +1,28 @@
 #include "main.h"
 
 /**
- *rec_oct - str
- *@num: char
+ * reverse_printf - prints the reversed string
+ * @arg: argument
+ * Return: counter
  */
-void rec_oct(unsigned int num)
+
+int reverse_printf(va_list arg)
 {
-    if (num / 8)
+    int i = 0, counter = 0;
+    char *str = va_arg(arg, char *);
+
+    if (str == NULL)
     {
-        rec_oct(num / 8);
-        _putchar(num % 8 + '0');
+        str = "(null)";
     }
-    else
-        _putchar(num % 8 + '0');
-}
-
-/**
- *print_octal - str
- * *@c: c
- * *Return: length
- * **/
-int print_octal(va_list c)
-{
-    unsigned int num;
-    long int iter;
-
-    num = va_arg(c, unsigned int);
-    rec_oct(num);
-    for (iter = 0; num / 8; iter++)
-        num = num / 8;
-    return (iter + 1);
-}
-
-/**
- *rec_hexa - function that gives you the hexa number
- *@num: user given number
- **/
-void rec_hexa(unsigned int num)
-{
-    int dif;
-
-    if (num / 16)
+    while (str[i] != '\0')
     {
-        rec_hexa(num / 16);
-        if (num % 16 > 9 && num % 16 <= 16)
-        {
-            dif = (num % 16) - 9;
-            _putchar((dif + 1) + '_');
-        }
-        else
-            _putchar(num % 16 + '0');
+        i++;
     }
-    else
+    for (i--; i >= 0; i--)
     {
-        if (num % 16 > 9 && num % 16 < 16)
-        {
-            dif = (num % 16) - 9;
-            _putchar((dif + 1) + '_');
-        }
-        else
-            _putchar(num % 16 + '0');
+        _putchar(str[i]);
+        counter++;
     }
-}
-/**
- *print_hexa - function that gives you the hexa number
- *@c: user given number
- *Return: 0
- **/
-int print_hexa(va_list c)
-{
-    long int num;
-    unsigned int iter;
-
-    iter = va_arg(c, unsigned int);
-
-    rec_hexa(iter);
-
-    for (num = 0; iter / 16; num++)
-    {
-        iter = iter / 16;
-    }
-    return (num + 1);
+    return (counter);
 }
