@@ -1,36 +1,32 @@
 #include "main.h"
-
 /**
- * rot13_printf - encodes a string into ROT13
- * @arg: string adress
- * Return: int
+ * print_sel - function pointer to functions
+ * @idsel: char to compare
+ * Return: function used and counter
  */
-int rot13_printf(va_list arg)
+int (*print_sel(char idsel))(va_list)
 {
-    int i, j, counter = 0;
-    char a[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    char b[] = "NOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLM";
-    char *s = va_arg(arg, char *);
+    id fnarray[] = {
+        {"c", _print_c},
+        {"s", _print_s},
+        {"%", _print_mod},
+        {"d", _print_i},
+        {"i", _print_i},
+        {"u", _print_ui},
+        {"b", _print_b},
+        {"o", _print_o},
+        {'\0', NULL}};
 
-    if (s == NULL)
-        s = "(NULL)";
-    for (i = 0; s[i]; i++)
+    int j;
+
+    for (j = 0; fnarray[j].argument != NULL; j++)
     {
-        for (j = 0; j < 52; j++)
+        if (idsel == *fnarray[j].argument)
         {
-            if (s[i] == a[j])
-                break;
-        }
-        if (s[i] == a[j])
-        {
-            _putchar(b[j]);
-            counter++;
-        }
-        else
-        {
-            _putchar(s[i]);
-            counter++;
+            return (fnarray[j].f);
         }
     }
-    return (counter);
+    _putchar('%');
+    _putchar(idsel);
+    return (fn_unk);
 }

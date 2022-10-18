@@ -1,39 +1,53 @@
 #include "main.h"
 
 /**
- * c_printf - Prints a character
- * @arg: Character
- *
- * Return: 1
+ * _print_c - print a char
+ * @list: arg from list
+ * Return: counter
  */
-int c_printf(va_list arg)
+int _print_c(va_list list)
 {
-    char c = va_arg(arg, int);
+    int cn = 0;
+    char arg = va_arg(list, int);
 
-    return (_putchar(c));
+    _putchar(arg);
+    cn++;
+
+    return (cn);
 }
-
 /**
- * s_printf - prints a string
- * @arg: string to print
- *
- * Return: length of string
+ * _print_s - print a string
+ * @list: arg from list
+ * Return: counter
  */
-
-int s_printf(va_list arg)
+int _print_s(va_list list)
 {
-    char *str;
-    int i = 0;
+    int i, cn = 0;
+    char *str = va_arg(list, char *);
 
-    str = va_arg(arg, char *);
     if (str == NULL)
-    {
         str = "(null)";
-    }
+
     for (i = 0; str[i] != '\0'; i++)
     {
         _putchar(str[i]);
+        cn++;
     }
 
-    return (i);
+    return (cn);
+}
+/**
+ * _print_mod - print a module char
+ * @list: arg from list
+ * Return: counter
+ */
+int _print_mod(va_list list)
+{
+    int cn = 0;
+    (void)list;
+
+    _putchar('%');
+    cn++;
+
+    return (cn);
 }

@@ -1,26 +1,18 @@
 #include "main.h"
 
 /**
- * pointer_printf - prints a pointer's adress
- * @p: pointer
- *
- * Return: pointer
+ * _pwr - Does exponential arithmetic
+ * @a: Base number
+ * @b: exponential number
+ * Return: Result
  */
-
-int pointer_printf(va_list p)
+int _pwr(int a, int b)
 {
-    char *str;
-    int i = 0;
+    int result = 1;
 
-    str = va_arg(p, char *);
-    if (str == NULL)
+    for (; b > 0; b--)
     {
-        return (0);
+        result = result * a;
     }
-    for (i = 0; str[i] != '\0'; i++)
-    {
-        _putchar(str[i]);
-    }
-
-    return (i);
+    return (result);
 }

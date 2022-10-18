@@ -1,30 +1,32 @@
 #include "main.h"
 
 /**
- * unsigned_printf - prints an unsigned integer
- * @u: integer to print
- *
- * Return: length
+ * _print_ui - prints unsigned integers
+ * @list: int from list below 0
+ * Return: counter
  */
-int unsigned_printf(va_list u)
+int _print_ui(va_list list)
 {
-    unsigned int integer, y, x;
-    int num, len;
+    int cn = 0, digit = 0, a = 1;
+    unsigned int j;
+    unsigned int i = va_arg(list, int);
 
-    num = va_arg(u, int);
+    j = i;
 
-    integer = num;
-    y = integer;
-    x = 1;
-
-    while (y > 9)
+    while (i > 0)
     {
-        y /= 10;
-        x *= 10;
+        i /= 10;
+        digit++;
     }
-    for (; x >= 1; x /= 10)
+    digit--;
+    while (digit > 0)
     {
-        len += _putchar(((integer / x) % 10) + '0');
+        a = _pwr(10, digit);
+        _putchar((j / a) % 10 + '0');
+        cn++;
+        digit--;
     }
-    return (len);
+    _putchar(j % 10 + '0');
+    cn++;
+    return (cn);
 }
