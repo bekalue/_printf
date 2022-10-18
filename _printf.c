@@ -1,38 +1,41 @@
 #include "main.h"
 
 /**
- * get_func - determines function based up on the specifier passed.
+ * get__op_func - determines function based up on the specifier passed.
  * @specifier: a specifier passed.
  *
  * Return: the choosen function or null.
  */
 
-int (*get_func(const char *specifier))(va_list)
+int (*get_op_func(char s))(va_list)
 {
-	print_f func[] = {
-		{"c", print_char},
-		{"s", print_string},
-		{"d", print_num},
-		{"i", print_num},
-		{"u", print_unsigned_int},
-		{"R", print_rot13},
-		{"r", print_reversed},
-		{"b", print_binary},
-		{"o", print_octal},
-		{"x", print_hexadecimal},
-		{"X", print_heXadecimal},
-		{"p", print_address},
-		{NULL, NULL}
+	int iterarr = 0;
+	type_t_f search[] = {
+		{'c', print_char},
+		{'s', print_string},
+		{'d', print_number},
+		{'i', print_number},
+		{'u', print_number_ui},
+		{'R', print_rot},
+		{'r', print_rev},
+		{'b', print_binary},
+		{'o', print_octal},
+		{'x', print_hexa},
+		{'X', print_HEXA},
+		{'p', print_pointer},
+		{'\0', NULL},
 	};
 
-	unsigned int i;
-
-	i = 0;
-	while (i != 13) /*13 is the size of func which array of structs*/
+	while (iterarr != 13)
 	{
-		if ((*func[i].s) == (*specifier))
-		return (func[i].f);
-		i++;
+		if (search[iterarr].tipo == s)
+		{
+			return (search[iterarr].f);
+		}
+		else
+		{
+			iterarr++;
+		}
 	}
 	return (NULL);
 }
@@ -41,18 +44,18 @@ int (*get_func(const char *specifier))(va_list)
  * @specifier: a specifier.
  * Return: not verified (0) or verified (1).
  */
-int verify(const char *specifier)
+int verify(char c)
 {
-	char *str = "csdiRurboxXp";
-	int len;
-	int i;
+	char *cadena = "csdiRurboxXp";
+	int t = 11;
+	int i = 0;
 
-	len = strlen(str);
-	i = 0;
-	while (i < len)
+	while (i <= t)
 	{
-		if (str[i] == (*specifier))
-		return (1);
+		if (cadena[i] == c)
+		{
+			return (1);
+		}
 		i++;
 	}
 	return (0);
@@ -64,38 +67,39 @@ int verify(const char *specifier)
  */
 int _printf(const char *format, ...)
 {
-	va_list arguments;
-	unsigned int count = 0, i;
-	int (*f)(va_list);
+	int num_characters = 0, iter = 0;
+	va_list parameter;
 
-	va_start(arguments, format);
+	va_start(parameter, format);
 
 	if (format != NULL)
 	{
-		for (i = 0; format[i]; i++)
+		for (iter = 0; format[iter]; iter++)
 		{
-			if (format[i] == '%' && format[i + 1] != '%' && format[i + 1] != '%')
+			if (format[iter] == '%' && format[iter + 1] != '%' && format[iter + 1] != '\0')
 			{
-				if (verify(&format[i + 1]) == 1)
+				if (verify(format[iter + 1]) == 1)
 				{
-					f = (*get_func(&format[i + 1]));
-					count += f(arguments);
-					i++;
+					num_characters += (*get_op_func(format[iter + 1]))(parameter);
+					iter++;
+					/*continue;*/
 				}
 				else
-				_putchar(format[i]), count++;
+					_putchar(format[iter]), num_characters++;
 			}
-			else if (format[i] == '%' && format[i + 1] == '%')
-			_putchar('%'), i++, count++;
-			else if (format[i] == '%' && format[i + 1] == '\0')
-			return (-1);
+			else if (format[iter] == '%' && format[iter + 1] == '%')
+				_putchar('%'), iter++, num_characters++;
+			else if (format[iter + 1] == '\0' && format[iter] == '%')
+			{
+				return (-1);
+			}
 			else
-			_putchar(format[i]), count++;
+				_putchar(format[iter]), num_characters++;
 		}
 	}
 	else
-	return (-1);
+		return (-1);
 
-	va_end(arguments);
-	return (count);
+	return (num_characters);
+	va_end(parameter);
 }
