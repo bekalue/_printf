@@ -2,32 +2,29 @@
 #define MAIN_H
 
 #include <stdarg.h>
-
 int _putchar(char c);
-int print_int(va_list arg);
-int print_unsigned(va_list arg);
 int _printf(const char *format, ...);
-int print_char(va_list arg);
-int print_str(va_list arg);
-int print_percent(void);
-void print_binary(unsigned int n, unsigned int *printed);
-int print_unsignedToBinary(va_list arg);
-int print_oct(va_list arg);
-int print_unsignedIntToHex(unsigned int num, char _case);
-int print_hex_base(va_list arg, char _case);
-int print_hex(va_list arg);
-int print_HEX(va_list arg);
-int print_STR(va_list arg);
-
+int print_char(va_list c);
+int print_string(va_list s);
+int print_int(va_list i);
+int print_dec(va_list d);
+int print_rev(va_list r);
+int print_bin(va_list b);
+int print_unsig(va_list u);
+int print_octal(va_list o);
+int print_x(va_list x);
+int print_X(va_list X);
+int print_rot13(va_list R);
 /**
- * struct identifierStruct - structure definition of a printTypeStruct
- * @indentifier: type
- * @printer: function to print
+ * struct code_format - Struct format
+ *
+ * @sc: The specifiers
+ * @f: The function associated
  */
-typedef struct identifierStruct
+typedef struct code_format
 {
-	char *indentifier;
-	int (*printer)(va_list);
-} identifierStruct;
+    char *sc;
+    int (*f)(va_list);
+} code_f;
 
-#endif
+#endif /* MAIN_H */
