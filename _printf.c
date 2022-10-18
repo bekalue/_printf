@@ -1,36 +1,49 @@
 #include "main.h"
+#include <stdarg.h>
+#include <stdlib.h>
+
 /**
- * _printf - prints a string to stdout
- * @format: string to print
- * Return: number of characters printed excluding null byte
+ * _printf - function that prints messages on the screen using a format
+ * @format: a string given
+ * Return: returns the number of characters printed
  */
 int _printf(const char *format, ...)
 {
 	va_list list;
-	int i, cn = 0;
-	int (*fnpointer)(va_list);
-
-	if (format == NULL || (format[0] == '%' && !format[1]))
-		return (-1);
+	int i, count = 0;
+	int (*ptr)(va_list);
 
 	va_start(list, format);
-	for (i = 0; format != NULL && format[i] != '\0'; i++)
-	{
-		if (format[i] == '%')
-		{
-			if (format[i + 1] == '\0')
-				return (-1);
+	if (format == NULL)
+		return (-1);
 
-			fnpointer = print_sel(format[i + 1]);
-			cn += fnpointer(list);
+	for (i = 0; format[i] != '\0'; i++)
+	{
+		if (format[i] == '%' && format[i + 1] != '%')
+		{
+			if (format[i + 1] != '\0')
+			{
+				ptr = get_func(format[i + 1]);
+				count += ptr(list);
+				i++;
+			}
+			else
+			{
+				return (-1);
+			}
+		}
+		else if (format[i] == '%' && format[i] == '%')
+		{
+			_putchar(format[i]);
 			i++;
+			count++;
 		}
 		else
 		{
-			_putchar(format[i]);
-			cn++;
+			write(1, &format[i], 1);
+			count++;
 		}
 	}
 	va_end(list);
-	return (cn);
+	return (count);
 }
