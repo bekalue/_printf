@@ -1,49 +1,91 @@
 #include "main.h"
-#include <stdarg.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 /**
- * _printf - function that prints messages on the screen using a format
- * @format: a string given
- * Return: returns the number of characters printed
+ * printIdentifiers - prints special characters
+ * @next: character after the %
+ * @arg: argument for the indentifier
+ * Return: the number of characters printed
+ * (excluding the null byte used to end output to strings)
  */
+
+int printIdentifiers(char next, va_list arg)
+{
+	int functsIndex;
+
+	identifierStruct functs[] = {
+		{"c", print_char},
+		{"s", print_str},
+		{"d", print_int},
+		{"i", print_int},
+		{"u", print_unsigned},
+		{"b", print_unsignedToBinary},
+		{"o", print_oct},
+		{"x", print_hex},
+		{"X", print_HEX},
+		{"S", print_STR},
+		{NULL, NULL}};
+
+	for (functsIndex = 0; functs[functsIndex].indentifier != NULL; functsIndex++)
+	{
+		if (functs[functsIndex].indentifier[0] == next)
+			return (functs[functsIndex].printer(arg));
+	}
+	return (0);
+}
+
+/**
+ * _printf - mimic printf from stdio
+ * Description: produces output according to a format
+ * write output to stdout, the standard output stream
+ * @format: character string composed of zero or more directives
+ *
+ * Return: the number of characters printed
+ * (excluding the null byte used to end output to strings)
+ * return -1 for incomplete identifier error
+ */
+
 int _printf(const char *format, ...)
 {
-	va_list list;
-	int i, count = 0;
-	int (*ptr)(va_list);
+	unsigned int i;
+	int identifierPrinted = 0, charPrinted = 0;
+	va_list arg;
 
-	va_start(list, format);
+	va_start(arg, format);
 	if (format == NULL)
 		return (-1);
 
 	for (i = 0; format[i] != '\0'; i++)
 	{
-		if (format[i] == '%' && format[i + 1] != '%')
-		{
-			if (format[i + 1] != '\0')
-			{
-				ptr = get_func(format[i + 1]);
-				count += ptr(list);
-				i++;
-			}
-			else
-			{
-				return (-1);
-			}
-		}
-		else if (format[i] == '%' && format[i] == '%')
+		if (format[i] != '%')
 		{
 			_putchar(format[i]);
-			i++;
-			count++;
+			charPrinted++;
+			continue;
 		}
-		else
+		if (format[i + 1] == '%')
 		{
-			write(1, &format[i], 1);
-			count++;
+			_putchar('%');
+			charPrinted++;
+			i++;
+			continue;
+		}
+		if (format[i + 1] == '\0')
+			return (-1);
+
+		identifierPrinted = printIdentifiers(format[i + 1], arg);
+		if (identifierPrinted == -1 || identifierPrinted != 0)
+			i++;
+		if (identifierPrinted > 0)
+			charPrinted += identifierPrinted;
+
+		if (identifierPrinted == 0)
+		{
+			_putchar('%');
+			charPrinted++;
 		}
 	}
-	va_end(list);
-	return (count);
+	va_end(arg);
+	return (charPrinted);
 }
