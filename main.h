@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <stddef.h>
+#include <math.h>
+#include <string.h>
 
 /* Struct */
 /**
@@ -25,7 +28,6 @@ typedef struct print print_f;
 int _putchar(char);
 int _printf(const char *format, ...);
 int print_string(va_list);
-int print_percentage(va_list);
 int print_char(va_list);
 int print_num(va_list);
 int print_String(va_list);

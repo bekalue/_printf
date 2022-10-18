@@ -1,64 +1,101 @@
 #include "main.h"
 
 /**
- * find_func - determines a function depending on the type and prints
- * of specifier passed
- * @c: a specifier.
- * @args: a list of arguments
- * Return: a right(choosen) function
+ * get_func - determines function based up on the specifier passed.
+ * @specifier: a specifier passed.
+ *
+ * Return: the choosen function or null.
  */
-int find_func(const char *c, va_list args)
+
+int (*get_func(const char *specifier))(va_list)
 {
-	int i = 0;
-	int len = 0;
-	print_f flags[] = {
+	print_f func[] = {
 		{"c", print_char},
 		{"s", print_string},
 		{"d", print_num},
 		{"i", print_num},
-		{"b", print_binary},
 		{"u", print_unsigned_int},
-		{"\n", NULL}};
-	while (flags[i].s)
-	{
-		if ((*flags[i].s) == (*c))
-			len = flags[i].f(args);
+		{"R", print_rot13},
+		{"r", print_reversed},
+		{"b", print_binary},
+		{"o", print_octal},
+		{"x", print_hexadecimal},
+		{"X", print_heXadecimal},
+		{"p", print_address},
+		{NULL, NULL}
+	};
 
+	unsigned int i;
+
+	i = 0;
+	while (i != 13) /*13 is the size of func which array of structs*/
+	{
+		if ((*func[i].s) == (*specifier))
+		return (func[i].f);
 		i++;
 	}
-	if ((*c) == '%')
-	{
-		_putchar('%');
-		return (1);
-	}
-	return (len);
+	return (NULL);
 }
-
 /**
- * _printf - prints formatted string just like printf
- * @format: a pointer to a string.
- * Return: number of characters printed.
+ * verify - validates the specifier.
+ * @specifier: a specifier.
+ * Return: not verified (0) or verified (1).
+ */
+int verify(const char *specifier)
+{
+	char *str = "csdiRurboxXp";
+	int len;
+	int i;
+
+	len = strlen(str);
+	i = 0;
+	while (i < len)
+	{
+		if (str[i] == (*specifier))
+		return (1);
+		i++;
+	}
+	return (0);
+}
+/**
+ * _printf - print whatever is given
+ * @format: arguments
+ * Return: number of characters printed
  */
 int _printf(const char *format, ...)
 {
-	va_list args;
-	unsigned int s, count;
+	va_list arguments;
+	unsigned int count = 0, i;
+	int (*f)(va_list);
 
-	count = 0;
-	va_start(args, format);
-	for (s = 0; format[s] != '\0'; s++)
+	va_start(arguments, format);
+
+	if (format != NULL)
 	{
-		if (format[s] == '%')
+		for (i = 0; format[i]; i++)
 		{
-			count += find_func(&format[s + 1], args);
-			s++;
-		}
-		else
-		{
-			_putchar(format[s]);
-			count++;
+			if (format[i] == '%' && format[i + 1] != '%' && format[i + 1] != '%')
+			{
+				if (verify(&format[i + 1]) == 1)
+				{
+					f = (*get_func(&format[i + 1]));
+					count += f(arguments);
+					i++;
+				}
+				else
+				_putchar(format[i]), count++;
+			}
+			else if (format[i] == '%' && format[i + 1] == '%')
+			_putchar('%'), i++, count++;
+			else if (format[i] == '%' && format[i + 1] == '\0')
+			return (-1);
+			else
+			_putchar(format[i]), count++;
 		}
 	}
-	va_end(args);
+	else
+	return (-1);
+
+	va_end(arguments);
 	return (count);
 }

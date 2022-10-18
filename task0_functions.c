@@ -37,14 +37,4 @@ int print_char(va_list args)
 	_putchar(c);
 	return (1);
 }
-/**
- * print_percentage - prints out a percentage
- * @args: list of arguments
- *
- * Return: the number of char printed (1)
- */
-int print_percentage(__attribute__((unused)) va_list args)
-{
-	_putchar('%');
-	return (1);
-}
+/*i included which about printing percentage in _printf() function itself - @bekalue*/
